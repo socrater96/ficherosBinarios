@@ -51,45 +51,39 @@ public class FicherosBinarios {
 		return esta;
 	}
 	static void alta(Scanner in){
-		String nombre=" ";
-		int edad=0;
-		char sexo=' ';
+		Persona persona = new Persona();
 		try {
-			DataOutputStream esc = new DataOutputStream(new FileOutputStream("todos.dat",true));
-			
-			System.out.println("Nombre (** para finalizar)");
-			nombre=in.nextLine();
-			while(!nombre.equals("**")) {
-				System.out.println("Edad: ");
-				edad=in.nextInt();
-				do {
-					System.out.print("Sexo: (H/M)");
-					sexo=Character.toUpperCase((char) System.in.read());
-					while(System.in.read()!='\n');
-				}while(sexo!='H' && sexo!='M');
-				in.nextLine();
-				esc.writeUTF(nombre);
-				esc.writeInt(edad);
-				esc.writeChar(sexo);
-				System.out.print("\nNombre (** para finalizar)? ");
-				nombre = in.nextLine();
-			}
+			DataOutputStream esc = new DataOutputStream(new FileOutputStream("todos.dat",true));		
+			do {
+				System.out.println("Nombre (** para finalizar)");
+				if(!persona.setNombre(in.nextLine()))
+					break;
+				else {
+					do {
+						System.out.println("Edad: ");
+					}while(!persona.setEdad(in.nextLine()));
+					do {
+						System.out.println("Sexo: (H/M)");
+					}while(!persona.setSexo(in.nextLine().toUpperCase()));
+					esc.writeUTF(persona.getNombre());
+					esc.writeInt(persona.getEdad());
+					esc.writeChar(persona.getSexo());
+				}	
+			}while(true);
 			esc.close();
 		}catch(IOException ioe) {}
 	}
 	static void listadoPersonas() {
-		String nombre= null;
-		int edad=0;
-		char sexo=' ';
+		Persona persona = new Persona();
 		try {
 			DataInputStream leer =new DataInputStream (new FileInputStream("todos.dat"));
 			System.out.println();
-			nombre=leer.readUTF();
-			while(!nombre.equals(null)) {
-				edad=leer.readInt();
-				sexo=leer.readChar();
-				System.out.println(nombre+tabular(nombre)+edad+"\t"+ sexo);
-				nombre=leer.readUTF();
+			persona.setNombre(leer.readUTF());
+			while(!persona.getNombre().equals(null)) {
+				persona.setEdad(String.valueOf(leer.readInt()));
+				persona.setSexo(String.valueOf(leer.readChar()));
+				System.out.println(persona.getNombre()+tabular(persona.getNombre()+persona.getEdad()+"\t"+ persona.getSexo()));
+				persona.setNombre(leer.readUTF());
 			}
 			leer.close();
 		}catch(IOException ioe) {}
@@ -223,20 +217,20 @@ public class FicherosBinarios {
 		do {
 			opcion=menu(in);
 			switch(opcion) {
-			case 1:
-				alta(in);
-				break;
-			case 2:
-				listadoPersonas();
-				break;
-			case 3:
-				busqueda(in);
-				break;
-			case 4:
-				baja(in);
-				break;
-			case 5:
-				System.out.println("Fin de programa");
+				case 1:
+					alta(in);
+					break;
+				case 2:
+					listadoPersonas();
+					break;
+				case 3:
+					busqueda(in);
+					break;
+				case 4:
+					baja(in);
+					break;
+				case 5:
+					System.out.println("Fin de programa");
 			}
 		}while(opcion!=5);
 		
