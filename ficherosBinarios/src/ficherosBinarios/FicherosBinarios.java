@@ -82,14 +82,14 @@ public class FicherosBinarios {
 			while(!persona.getNombre().equals(null)) {
 				persona.setEdad(String.valueOf(leer.readInt()));
 				persona.setSexo(String.valueOf(leer.readChar()));
-				System.out.println(persona.getNombre()+tabular(persona.getNombre()+persona.getEdad()+"\t"+ persona.getSexo()));
+				System.out.println(persona.getNombre()+"\t"+persona.getEdad()+"\t"+ persona.getSexo());
 				persona.setNombre(leer.readUTF());
 			}
 			leer.close();
 		}catch(IOException ioe) {}
 		
 	}
-	private static String tabular(String nombre) {
+/*	private static String tabular(String nombre) {
 		String tabulado="\t";
 		if(nombre.length()<8) {
 			tabulado="\t\t";
@@ -97,6 +97,7 @@ public class FicherosBinarios {
 		
 		return tabulado;
 	}
+*/
 	static int menuBusqueda(Scanner in) {
 		int opcion=0;
 		do {
@@ -105,9 +106,9 @@ public class FicherosBinarios {
 			System.out.println("2.Búsqueda por sexo");
 			System.out.println("3.Búsqueda por nombre y edad");
 			System.out.println("4.Volver al menú principal");
-			System.out.println("Seleccione opción: (1-3)");
+			System.out.println("Seleccione opción: (1-4)");
 			try {
-				opcion=in.nextInt();
+				opcion=Integer.parseInt(in.nextLine());
 			}catch(NumberFormatException nfe) {
 				System.out.println("Valor no numérico");
 			}
@@ -119,20 +120,17 @@ public class FicherosBinarios {
 		String nombreBus=in.nextLine();
 		boolean esta=false;
 		try {
-			DataInputStream dis =new DataInputStream (new FileInputStream("todos.dat"));
-			nombreBus= dis.readUTF();
-			while(!nombreBus.equals(null)) {
-				String nombre=dis.readUTF();
-				int edad=dis.readInt();
-				char sexo=dis.readChar();
-				if(nombreBus.equalsIgnoreCase(nombre)) {
-					System.out.print(nombre+tabular(nombre)+edad+"\t"+sexo);
+			DataInputStream dis = new DataInputStream (new FileInputStream("todos.dat"));
+			while(dis.available()>0) {
+				Persona persona = new Persona();
+				persona.leerPersona(dis);
+				if(nombreBus.equalsIgnoreCase(persona.getNombre())) {
+					System.out.println(persona.toString());
 					esta=true;
 				}
 			}
-			
 			if(!esta)
-				System.out.println("nonono ese nombre no lo tenemos hermano");
+				System.out.println("No hay nadie con ese nombre");
 			
 		}catch(IOException ioe) {}
 	}
@@ -146,7 +144,7 @@ public class FicherosBinarios {
 	static void busqueda(Scanner in) {
 		int opcion=0;
 		do {
-			opcion=menu(in);
+			opcion=menuBusqueda(in);
 			switch(opcion) {
 			case 1:
 				busquedaNombre(in);
@@ -155,9 +153,11 @@ public class FicherosBinarios {
 //				busquedaSexo(in);
 				break;
 			case 3:
+				break;
+			case 4:
 				System.out.println();
 			}
-		}while(opcion!=3);
+		}while(opcion!=4);
 		
 	}
 	static void baja(Scanner in) {

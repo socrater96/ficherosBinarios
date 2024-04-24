@@ -1,5 +1,8 @@
 package ficherosBinarios;
 
+import java.io.DataInputStream;
+import java.io.EOFException;
+import java.io.IOException;
 import java.util.InputMismatchException;
 
 public class Persona {
@@ -52,6 +55,19 @@ public class Persona {
 			return true;
 		}
 	}
+	public Persona leerPersona(DataInputStream dis) throws IOException {
+		try {
+			nombre = dis.readUTF();
+            edad = dis.readInt();
+            sexo = dis.readChar();
+            return new Persona(nombre, edad, sexo);
+        } catch (EOFException e) {
+        	return null;
+        }
+    }
+	public String toString() {
+        return "Nombre: " + nombre + ", Edad: " + edad + " años, Sexo: "+sexo;
+    }
 	
 	
 }
