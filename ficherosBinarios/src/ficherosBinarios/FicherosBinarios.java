@@ -122,8 +122,7 @@ public class FicherosBinarios {
 		try {
 			DataInputStream dis = new DataInputStream (new FileInputStream("todos.dat"));
 			while(dis.available()>0) {
-				Persona persona = new Persona();
-				persona.leerPersona(dis);
+				Persona persona = new Persona(dis.readUTF(),dis.readInt(),dis.readChar());
 				if(nombreBus.equalsIgnoreCase(persona.getNombre())) {
 					System.out.println(persona.toString());
 					esta=true;
@@ -131,16 +130,46 @@ public class FicherosBinarios {
 			}
 			if(!esta)
 				System.out.println("No hay nadie con ese nombre");
-			
+			dis.close();
 		}catch(IOException ioe) {}
 	}
-	static void busquedaSexo(Scanner in) throws IOException {
+	static void busquedaSexo(Scanner in) {
 		System.out.println("Sexo a buscar: ");
-		char sexo=Character.toUpperCase((char) System.in.read());
-		while(System.in.read()!='\n');
-		
-		
+		char sexoBus=in.nextLine().charAt(0);
+		boolean esta=false;
+		try {
+			DataInputStream dis = new DataInputStream (new FileInputStream("todos.dat"));
+			while(dis.available()>0) {
+				Persona persona = new Persona(dis.readUTF(),dis.readInt(),dis.readChar());
+				if(sexoBus==persona.getSexo()) {
+					System.out.println(persona.toString());
+					esta=true;
+				}
+			}
+			if(!esta)
+				System.out.println("No hay nadie con ese sexo");
+			dis.close();
+		}catch(IOException ioe) {}
 	}
+	static void busquedaNombreEdad (Scanner in) {
+		System.out.println("Sexo a buscar: ");
+		char sexoBus=in.nextLine().charAt(0);
+		boolean esta=false;
+		try {
+			DataInputStream dis = new DataInputStream (new FileInputStream("todos.dat"));
+			while(dis.available()>0) {
+				Persona persona = new Persona(dis.readUTF(),dis.readInt(),dis.readChar());
+				if(sexoBus==persona.getSexo()) {
+					System.out.println(persona.toString());
+					esta=true;
+				}
+			}
+			if(!esta)
+				System.out.println("No hay nadie con ese sexo");
+			dis.close();
+		}catch(IOException ioe) {}
+	}
+	
 	static void busqueda(Scanner in) {
 		int opcion=0;
 		do {
@@ -150,9 +179,10 @@ public class FicherosBinarios {
 				busquedaNombre(in);
 				break;
 			case 2:
-//				busquedaSexo(in);
+				busquedaSexo(in);
 				break;
 			case 3:
+				busquedaNombreEdad(in);
 				break;
 			case 4:
 				System.out.println();
